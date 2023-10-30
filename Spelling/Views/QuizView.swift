@@ -34,6 +34,11 @@ struct QuizView: View {
             HStack{
                 Spacer()
                 Button(action: {
+                    newWord()
+                }, label: {
+                    Text("New word")
+                })
+                Button(action: {
                     print(checkGuess())
                 }, label: {
                     Text("Submit")
@@ -51,6 +56,12 @@ struct QuizView: View {
             print("Incorrect")
             currentOutcome = .incorrect
         }
+    }
+    
+    func newWord() {
+        currentItem = itemsToSpell.randomElement()!
+        userGuess = ""
+        currentOutcome = .undertemined
     }
 }
 
