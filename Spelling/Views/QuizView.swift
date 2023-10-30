@@ -7,11 +7,6 @@
 
 import SwiftUI
 
-enum Outcome: String{
-    case undertemined = " "
-    case correct = "✅"
-    case incorrect = "❌"
-}
 
 struct QuizView: View {
     
