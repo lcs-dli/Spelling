@@ -14,35 +14,52 @@ struct QuizView: View {
     @State var currentItem = itemsToSpell.randomElement()!
     @State var userGuess = ""
     @State var currentOutcome : Outcome = .undertemined
+
+    @State var history: [Result] = []
     // MARK: Computed properties
     var body: some View {
         
-        VStack {
-            Image(currentItem.imageName)
-                .resizable()
-                .scaledToFit()
-            
-            HStack {
-                TextField("Enter the name of the item", text: $userGuess)
-                    .padding()
+        HStack {
+            VStack {
+                Image(currentItem.imageName)
+                    .resizable()
+                    .scaledToFit()
                 
-                Text(currentOutcome.rawValue)
+                HStack {
+                    TextField("Enter the name of the item", text: $userGuess)
+                        .padding()
+                    
+                    Text(currentOutcome.rawValue)
+                    
+                }
+                .padding(.horizontal)
                 
+                HStack{
+                    Spacer()
+                    Button(action: {
+                        newWord()
+                    }, label: {
+                        Text("New word")
+                    })
+                    Button(action: {
+                        print(checkGuess())
+                    }, label: {
+                        Text("Submit")
+                    })
+                }
             }
-            .padding(.horizontal)
-            
-            HStack{
-                Spacer()
-                Button(action: {
-                    newWord()
-                }, label: {
-                    Text("New word")
-                })
-                Button(action: {
-                    print(checkGuess())
-                }, label: {
-                    Text("Submit")
-                })
+            List(filtering(originalList: history, on: .correct)){ currentResult in
+                HStack{
+                    Image(currentResult.item.imageName)
+                        .resizable()
+                        .scaledToFit()
+                        .frame(width: 25)
+                    Text(currentResult.guessProvided)
+                    
+                    Spacer()
+                    
+                    Text(currentResult.outcome.rawValue)
+                }
             }
         }
         
@@ -59,6 +76,17 @@ struct QuizView: View {
     }
     
     func newWord() {
+        //Add current result to the history
+        history.insert(
+            Result(
+                item: currentItem,
+                guessProvided: userGuess,
+                outcome: currentOutcome
+            ),
+            at: 0
+        )
+        
+        //Reset the page
         currentItem = itemsToSpell.randomElement()!
         userGuess = ""
         currentOutcome = .undertemined
